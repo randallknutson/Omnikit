@@ -3,18 +3,43 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		103899E526D405B9002115E9 /* CryptoSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 103899E426D405B9002115E9 /* CryptoSwift */; };
 		10C2CA8826B57E5600B89123 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10C2CA8726B57E5600B89123 /* AppDelegate.swift */; };
 		10C2CA8A26B57E5600B89123 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10C2CA8926B57E5600B89123 /* SceneDelegate.swift */; };
 		10C2CA8C26B57E5600B89123 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10C2CA8B26B57E5600B89123 /* ViewController.swift */; };
 		10C2CA8F26B57E5600B89123 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 10C2CA8D26B57E5600B89123 /* Main.storyboard */; };
 		10C2CA9126B57E5800B89123 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 10C2CA9026B57E5800B89123 /* Assets.xcassets */; };
 		10C2CA9426B57E5800B89123 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 10C2CA9226B57E5800B89123 /* LaunchScreen.storyboard */; };
-		10C2CA9F26B57E5800B89123 /* OpenPodSDKTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10C2CA9E26B57E5800B89123 /* OpenPodSDKTests.swift */; };
-		10C2CAAA26B57E5800B89123 /* OpenPodSDKUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10C2CAA926B57E5800B89123 /* OpenPodSDKUITests.swift */; };
+		10C2CA9F26B57E5800B89123 /* PodSDKTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10C2CA9E26B57E5800B89123 /* PodSDKTests.swift */; };
+		10C2CAC526B5858800B89123 /* PodState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10C2CAC426B5858800B89123 /* PodState.swift */; };
+		10C2CACB26BA2F8D00B89123 /* KeyExchange.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10C2CACA26BA2F8D00B89123 /* KeyExchange.swift */; };
+		10C2CACD26BA2FD100B89123 /* LTKExchanger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10C2CACC26BA2FD100B89123 /* LTKExchanger.swift */; };
+		10C2CAD426BA3FDB00B89123 /* BLEErrors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10C2CAD326BA3FDB00B89123 /* BLEErrors.swift */; };
+		10C2CAD626BB8DBF00B89123 /* PairMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10C2CAD526BB8DBF00B89123 /* PairMessage.swift */; };
+		10C2CAD826BB8F2100B89123 /* PairResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10C2CAD726BB8F2100B89123 /* PairResult.swift */; };
+		10C2CADB26BB946400B89123 /* MessageType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10C2CADA26BB946400B89123 /* MessageType.swift */; };
+		10C2CADD26BB95B400B89123 /* MessagePacket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10C2CADC26BB95B400B89123 /* MessagePacket.swift */; };
+		10C2CAE326BCE1BD00B89123 /* Ids.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10C2CAE226BCE1BD00B89123 /* Ids.swift */; };
+		10C2CAE526BCE36F00B89123 /* Id.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10C2CAE426BCE36F00B89123 /* Id.swift */; };
+		10C2CAE726BCF09A00B89123 /* StringLengthPrefixEncoding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10C2CAE626BCF09A00B89123 /* StringLengthPrefixEncoding.swift */; };
+		10C2CAE926C09F0400B89123 /* X25519KeyGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10C2CAE826C09F0400B89123 /* X25519KeyGenerator.swift */; };
+		10C2CAEB26C09F1600B89123 /* RandomByteGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10C2CAEA26C09F1600B89123 /* RandomByteGenerator.swift */; };
+		10C2CAEE26C4C3CD00B89123 /* BLEPacket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10C2CAED26C4C3CD00B89123 /* BLEPacket.swift */; };
+		10C2CAF026C4C3F600B89123 /* PayloadJoiner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10C2CAEF26C4C3F600B89123 /* PayloadJoiner.swift */; };
+		10C2CAF226C4C40600B89123 /* PayloadSplitter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10C2CAF126C4C40600B89123 /* PayloadSplitter.swift */; };
+		10C2CAF826CC255200B89123 /* PeripheralManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10C2CAF726CC255200B89123 /* PeripheralManager.swift */; };
+		10C2CAFA26CC5BAA00B89123 /* OSLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10C2CAF926CC5BAA00B89123 /* OSLog.swift */; };
+		10C2CAFE26CC693B00B89123 /* PodCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10C2CAFD26CC693B00B89123 /* PodCommands.swift */; };
+		10C2CB0026CC72BA00B89123 /* PodKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10C2CAFF26CC72BA00B89123 /* PodKit.swift */; };
+		10C2CB0226CD411E00B89123 /* PeripheralManagerError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10C2CB0126CD411E00B89123 /* PeripheralManagerError.swift */; };
+		10C2CB0426CD449100B89123 /* BluetoothManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10C2CB0326CD449100B89123 /* BluetoothManager.swift */; };
+		10C2CB0726CD45C700B89123 /* Locked.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10C2CB0626CD45C700B89123 /* Locked.swift */; };
+		10C2CB0926CDD49100B89123 /* PodDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10C2CB0826CDD49100B89123 /* PodDevice.swift */; };
+		10C2CB0B26CDF76C00B89123 /* CBCentralManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10C2CB0A26CDF76C00B89123 /* CBCentralManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -44,11 +69,34 @@
 		10C2CA9326B57E5800B89123 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		10C2CA9526B57E5800B89123 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		10C2CA9A26B57E5800B89123 /* OpenPodSDKTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OpenPodSDKTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		10C2CA9E26B57E5800B89123 /* OpenPodSDKTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenPodSDKTests.swift; sourceTree = "<group>"; };
+		10C2CA9E26B57E5800B89123 /* PodSDKTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodSDKTests.swift; sourceTree = "<group>"; };
 		10C2CAA026B57E5800B89123 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		10C2CAA526B57E5800B89123 /* OpenPodSDKUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OpenPodSDKUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		10C2CAA926B57E5800B89123 /* OpenPodSDKUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenPodSDKUITests.swift; sourceTree = "<group>"; };
-		10C2CAAB26B57E5800B89123 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		10C2CAC426B5858800B89123 /* PodState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodState.swift; sourceTree = "<group>"; };
+		10C2CACA26BA2F8D00B89123 /* KeyExchange.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyExchange.swift; sourceTree = "<group>"; };
+		10C2CACC26BA2FD100B89123 /* LTKExchanger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LTKExchanger.swift; sourceTree = "<group>"; };
+		10C2CAD326BA3FDB00B89123 /* BLEErrors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BLEErrors.swift; sourceTree = "<group>"; };
+		10C2CAD526BB8DBF00B89123 /* PairMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PairMessage.swift; sourceTree = "<group>"; };
+		10C2CAD726BB8F2100B89123 /* PairResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PairResult.swift; sourceTree = "<group>"; };
+		10C2CADA26BB946400B89123 /* MessageType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageType.swift; sourceTree = "<group>"; };
+		10C2CADC26BB95B400B89123 /* MessagePacket.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagePacket.swift; sourceTree = "<group>"; };
+		10C2CAE226BCE1BD00B89123 /* Ids.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ids.swift; sourceTree = "<group>"; };
+		10C2CAE426BCE36F00B89123 /* Id.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Id.swift; sourceTree = "<group>"; };
+		10C2CAE626BCF09A00B89123 /* StringLengthPrefixEncoding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringLengthPrefixEncoding.swift; sourceTree = "<group>"; };
+		10C2CAE826C09F0400B89123 /* X25519KeyGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = X25519KeyGenerator.swift; sourceTree = "<group>"; };
+		10C2CAEA26C09F1600B89123 /* RandomByteGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RandomByteGenerator.swift; sourceTree = "<group>"; };
+		10C2CAED26C4C3CD00B89123 /* BLEPacket.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BLEPacket.swift; sourceTree = "<group>"; };
+		10C2CAEF26C4C3F600B89123 /* PayloadJoiner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PayloadJoiner.swift; sourceTree = "<group>"; };
+		10C2CAF126C4C40600B89123 /* PayloadSplitter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PayloadSplitter.swift; sourceTree = "<group>"; };
+		10C2CAF726CC255200B89123 /* PeripheralManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeripheralManager.swift; sourceTree = "<group>"; };
+		10C2CAF926CC5BAA00B89123 /* OSLog.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OSLog.swift; sourceTree = "<group>"; };
+		10C2CAFD26CC693B00B89123 /* PodCommands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodCommands.swift; sourceTree = "<group>"; };
+		10C2CAFF26CC72BA00B89123 /* PodKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodKit.swift; sourceTree = "<group>"; };
+		10C2CB0126CD411E00B89123 /* PeripheralManagerError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeripheralManagerError.swift; sourceTree = "<group>"; };
+		10C2CB0326CD449100B89123 /* BluetoothManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothManager.swift; sourceTree = "<group>"; };
+		10C2CB0626CD45C700B89123 /* Locked.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Locked.swift; sourceTree = "<group>"; };
+		10C2CB0826CDD49100B89123 /* PodDevice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodDevice.swift; sourceTree = "<group>"; };
+		10C2CB0A26CDF76C00B89123 /* CBCentralManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CBCentralManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,6 +104,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				103899E526D405B9002115E9 /* CryptoSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -81,7 +130,6 @@
 			children = (
 				10C2CA8626B57E5600B89123 /* OpenPodSDK */,
 				10C2CA9D26B57E5800B89123 /* OpenPodSDKTests */,
-				10C2CAA826B57E5800B89123 /* OpenPodSDKUITests */,
 				10C2CA8526B57E5600B89123 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -99,6 +147,9 @@
 		10C2CA8626B57E5600B89123 /* OpenPodSDK */ = {
 			isa = PBXGroup;
 			children = (
+				10C2CB0526CD45B700B89123 /* Common */,
+				10C2CAC926B7876D00B89123 /* Pod */,
+				10C2CAC826B6F4F100B89123 /* Bluetooth */,
 				10C2CA8726B57E5600B89123 /* AppDelegate.swift */,
 				10C2CA8926B57E5600B89123 /* SceneDelegate.swift */,
 				10C2CA8B26B57E5600B89123 /* ViewController.swift */,
@@ -113,19 +164,88 @@
 		10C2CA9D26B57E5800B89123 /* OpenPodSDKTests */ = {
 			isa = PBXGroup;
 			children = (
-				10C2CA9E26B57E5800B89123 /* OpenPodSDKTests.swift */,
+				10C2CA9E26B57E5800B89123 /* PodSDKTests.swift */,
 				10C2CAA026B57E5800B89123 /* Info.plist */,
 			);
 			path = OpenPodSDKTests;
 			sourceTree = "<group>";
 		};
-		10C2CAA826B57E5800B89123 /* OpenPodSDKUITests */ = {
+		10C2CAC826B6F4F100B89123 /* Bluetooth */ = {
 			isa = PBXGroup;
 			children = (
-				10C2CAA926B57E5800B89123 /* OpenPodSDKUITests.swift */,
-				10C2CAAB26B57E5800B89123 /* Info.plist */,
+				10C2CAEC26C4C3C100B89123 /* Packet */,
+				10C2CAD926BB945600B89123 /* Message */,
+				10C2CACF26BA305900B89123 /* Util */,
+				10C2CACE26BA301800B89123 /* Pair */,
+				10C2CB0326CD449100B89123 /* BluetoothManager.swift */,
+				10C2CAD326BA3FDB00B89123 /* BLEErrors.swift */,
+				10C2CAF726CC255200B89123 /* PeripheralManager.swift */,
+				10C2CB0126CD411E00B89123 /* PeripheralManagerError.swift */,
+				10C2CAE226BCE1BD00B89123 /* Ids.swift */,
+				10C2CAE426BCE36F00B89123 /* Id.swift */,
+				10C2CB0A26CDF76C00B89123 /* CBCentralManager.swift */,
 			);
-			path = OpenPodSDKUITests;
+			path = Bluetooth;
+			sourceTree = "<group>";
+		};
+		10C2CAC926B7876D00B89123 /* Pod */ = {
+			isa = PBXGroup;
+			children = (
+				10C2CAFF26CC72BA00B89123 /* PodKit.swift */,
+				10C2CAFD26CC693B00B89123 /* PodCommands.swift */,
+				10C2CAC426B5858800B89123 /* PodState.swift */,
+				10C2CB0826CDD49100B89123 /* PodDevice.swift */,
+			);
+			path = Pod;
+			sourceTree = "<group>";
+		};
+		10C2CACE26BA301800B89123 /* Pair */ = {
+			isa = PBXGroup;
+			children = (
+				10C2CACA26BA2F8D00B89123 /* KeyExchange.swift */,
+				10C2CACC26BA2FD100B89123 /* LTKExchanger.swift */,
+				10C2CAD526BB8DBF00B89123 /* PairMessage.swift */,
+				10C2CAD726BB8F2100B89123 /* PairResult.swift */,
+			);
+			path = Pair;
+			sourceTree = "<group>";
+		};
+		10C2CACF26BA305900B89123 /* Util */ = {
+			isa = PBXGroup;
+			children = (
+				10C2CAE826C09F0400B89123 /* X25519KeyGenerator.swift */,
+				10C2CAEA26C09F1600B89123 /* RandomByteGenerator.swift */,
+			);
+			path = Util;
+			sourceTree = "<group>";
+		};
+		10C2CAD926BB945600B89123 /* Message */ = {
+			isa = PBXGroup;
+			children = (
+				10C2CADA26BB946400B89123 /* MessageType.swift */,
+				10C2CADC26BB95B400B89123 /* MessagePacket.swift */,
+				10C2CAE626BCF09A00B89123 /* StringLengthPrefixEncoding.swift */,
+			);
+			path = Message;
+			sourceTree = "<group>";
+		};
+		10C2CAEC26C4C3C100B89123 /* Packet */ = {
+			isa = PBXGroup;
+			children = (
+				10C2CAED26C4C3CD00B89123 /* BLEPacket.swift */,
+				10C2CAEF26C4C3F600B89123 /* PayloadJoiner.swift */,
+				10C2CAF126C4C40600B89123 /* PayloadSplitter.swift */,
+			);
+			path = Packet;
+			sourceTree = "<group>";
+		};
+		10C2CB0526CD45B700B89123 /* Common */ = {
+			isa = PBXGroup;
+			children = (
+				10C2CAF926CC5BAA00B89123 /* OSLog.swift */,
+				10C2CB0626CD45C700B89123 /* Locked.swift */,
+			);
+			path = Common;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -144,6 +264,9 @@
 			dependencies = (
 			);
 			name = OpenPodSDK;
+			packageProductDependencies = (
+				103899E426D405B9002115E9 /* CryptoSwift */,
+			);
 			productName = OpenPodSDK;
 			productReference = 10C2CA8426B57E5600B89123 /* OpenPodSDK.app */;
 			productType = "com.apple.product-type.application";
@@ -215,6 +338,9 @@
 				Base,
 			);
 			mainGroup = 10C2CA7B26B57E5600B89123;
+			packageReferences = (
+				103899E326D405B9002115E9 /* XCRemoteSwiftPackageReference "CryptoSwift" */,
+			);
 			productRefGroup = 10C2CA8526B57E5600B89123 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -258,9 +384,34 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				10C2CAEB26C09F1600B89123 /* RandomByteGenerator.swift in Sources */,
+				10C2CB0026CC72BA00B89123 /* PodKit.swift in Sources */,
+				10C2CAE926C09F0400B89123 /* X25519KeyGenerator.swift in Sources */,
+				10C2CAE726BCF09A00B89123 /* StringLengthPrefixEncoding.swift in Sources */,
+				10C2CAF826CC255200B89123 /* PeripheralManager.swift in Sources */,
+				10C2CAD426BA3FDB00B89123 /* BLEErrors.swift in Sources */,
+				10C2CAF026C4C3F600B89123 /* PayloadJoiner.swift in Sources */,
+				10C2CAFA26CC5BAA00B89123 /* OSLog.swift in Sources */,
+				10C2CAEE26C4C3CD00B89123 /* BLEPacket.swift in Sources */,
+				10C2CB0226CD411E00B89123 /* PeripheralManagerError.swift in Sources */,
+				10C2CADB26BB946400B89123 /* MessageType.swift in Sources */,
+				10C2CB0926CDD49100B89123 /* PodDevice.swift in Sources */,
+				10C2CACB26BA2F8D00B89123 /* KeyExchange.swift in Sources */,
+				10C2CAFE26CC693B00B89123 /* PodCommands.swift in Sources */,
+				10C2CAE326BCE1BD00B89123 /* Ids.swift in Sources */,
+				10C2CB0B26CDF76C00B89123 /* CBCentralManager.swift in Sources */,
+				10C2CAD826BB8F2100B89123 /* PairResult.swift in Sources */,
+				10C2CAF226C4C40600B89123 /* PayloadSplitter.swift in Sources */,
 				10C2CA8C26B57E5600B89123 /* ViewController.swift in Sources */,
+				10C2CACD26BA2FD100B89123 /* LTKExchanger.swift in Sources */,
 				10C2CA8826B57E5600B89123 /* AppDelegate.swift in Sources */,
+				10C2CADD26BB95B400B89123 /* MessagePacket.swift in Sources */,
+				10C2CB0726CD45C700B89123 /* Locked.swift in Sources */,
+				10C2CB0426CD449100B89123 /* BluetoothManager.swift in Sources */,
 				10C2CA8A26B57E5600B89123 /* SceneDelegate.swift in Sources */,
+				10C2CAC526B5858800B89123 /* PodState.swift in Sources */,
+				10C2CAE526BCE36F00B89123 /* Id.swift in Sources */,
+				10C2CAD626BB8DBF00B89123 /* PairMessage.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -268,7 +419,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				10C2CA9F26B57E5800B89123 /* OpenPodSDKTests.swift in Sources */,
+				10C2CA9F26B57E5800B89123 /* PodSDKTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -276,7 +427,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				10C2CAAA26B57E5800B89123 /* OpenPodSDKUITests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -593,6 +743,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		103899E326D405B9002115E9 /* XCRemoteSwiftPackageReference "CryptoSwift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/krzyzanowskim/CryptoSwift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.4.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		103899E426D405B9002115E9 /* CryptoSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 103899E326D405B9002115E9 /* XCRemoteSwiftPackageReference "CryptoSwift" */;
+			productName = CryptoSwift;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 10C2CA7C26B57E5600B89123 /* Project object */;
 }
