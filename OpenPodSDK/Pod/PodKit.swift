@@ -38,7 +38,7 @@ class PodKit {
     func pair(_ device: PodDevice) throws {
         print("pair")
         let id = Id.fromInt(CONTROLLER_ID)
-        device.manager.sendHello(id.address)
+        try device.manager.sendHello(id.address)
         
         let ltkExchanger = LTKExchanger(device: device, ids: Ids(podState: PodStateManager(id: 1)))
         let result = try ltkExchanger.negotiateLTK()

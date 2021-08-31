@@ -14,7 +14,7 @@ protocol MessageResult {
 }
 
 struct MessageSendFailure: MessageResult {
-    
+    var error: Error
 }
 
 struct MessageSendSuccess: MessageResult {
@@ -43,6 +43,9 @@ class PeripheralManager: NSObject {
             }
         }
     }
+    
+    var dataQueue: [Data] = []
+    var cmdQueue: [Data] = []
     
     let serviceUUID = CBUUID(string: "1A7E4024-E3ED-4464-8B7E-751E03D0DC5F")
     let cmdCharacteristicUUID = CBUUID(string: "1A7E2441-E3ED-4464-8B7E-751E03D0DC5F")
@@ -221,227 +224,177 @@ extension PeripheralManager {
 //}
 
 extension PeripheralManager {
+
+    /// - Throws: PeripheralManagerError
+    func sendHello(_ controllerId: Data) throws {
+        guard let characteristic = cmdCharacteristic else {
+            throw PeripheralManagerError.notReady
+        }
+        perform { [weak self] _ in
+            try? self?.writeValue(Data([PodCommand.HELLO.rawValue, 0x01, 0x04]) + controllerId, characteristic: characteristic, type: .withResponse, timeout: 5)
+        }
+    }
+
+    /// - Throws: PeripheralManagerError
+    func sendCommandType(_ command: PodCommand, timeout: TimeInterval = 5) throws  {
+        guard let characteristic = cmdCharacteristic else {
+            throw PeripheralManagerError.notReady
+        }
+        try? writeValue(Data([command.rawValue]), characteristic: characteristic, type: .withResponse, timeout: timeout)
+    }
     
     /// - Throws: PeripheralManagerError
-    func writeCommand(_ value: Data, type: CBCharacteristicWriteType = .withResponse, timeout: TimeInterval) throws {
-        perform { [weak self] (manager) in
-            guard let characteristic = self?.cmdCharacteristic else {
-                return
-            }
-            try? self?.writeValue(value, characteristic: characteristic, type: type, timeout: timeout)
-        }
-    }
-
-    /// - Throws: PeripheralManagerError
-    func readCommand(timeout: TimeInterval, completion: @escaping (Data?) -> Void) {
-        perform { [weak self] (manager) in
-            guard let characteristic = self?.cmdCharacteristic else {
-                completion(nil)
-                return
-            }
-
-            do {
-                guard let data = try self?.readValue(characteristic: characteristic, timeout: timeout) else {
-                    completion(nil)
-                    return
-                }
-                
-                completion(data)
-            } catch {
-                completion(nil)
-                return
-            }
-        }
-    }
-
-
-    /// - Throws: PeripheralManagerError
-    func sendCommandType(_ command: PodCommand) {
+    func readCommandType(_ command: PodCommand, timeout: TimeInterval = 5) throws {
         guard let characteristic = cmdCharacteristic else {
             return
         }
-        try? writeValue(Data([command.rawValue]), characteristic: characteristic, type: .withResponse, timeout: 2)
-    }
-    
-    func expectCommandType(_ command: PodCommand) {
-        try? runCommand(timeout: 2) {
-            guard let characteristic = cmdCharacteristic else {
-                return
+
+        // If a command has not yet been received, wait for it.
+        if (cmdQueue.count == 0) {
+            try runCommand(timeout: timeout) {
+                addCondition(.valueUpdate(characteristic: characteristic, matching: nil))
             }
-
-            addCondition(.valueUpdate(characteristic: characteristic, matching: { value in
-                guard let value = value, value.count > 0 else {
-                    return false
-                }
-                
-                guard let response = PodCommand(rawValue: value[0]) else {
-                    return false
-                }
-                
-                if response != command {
-                    return false
-                }
-                
-                return true
-            }))
-        }
-    }
-    
-    func peekForNack() -> Bool {
-        print("Peek for nack")
-        guard let characteristic = cmdCharacteristic else {
-            return true
         }
 
-        guard let value = characteristic.value, value.count > 0 else {
-            return true
+        if (cmdQueue.count > 0) {
+            let value = cmdQueue.remove(at: 0)
+            
+            if command.rawValue != value[0] {
+                throw PeripheralManagerError.incorrectResponse
+            }
+            return
         }
         
-        guard let response = PodCommand(rawValue: value[0]) else {
-            return true
-        }
-
-        return response != PodCommand.NACK
+        throw PeripheralManagerError.incorrectResponse
     }
     
-    func sendData(_ value: Data, timeout: TimeInterval) {
+    /// - Throws: PeripheralManagerError
+    func sendData(_ value: Data, timeout: TimeInterval) throws {
         guard let characteristic = dataCharacteristic else {
-            return
+            throw PeripheralManagerError.notReady
         }
         try? writeValue(value, characteristic: characteristic, type: .withResponse, timeout: timeout)
     }
 
-    func readData(timeout: TimeInterval) -> Data? {
-        guard let characteristic = dataCharacteristic else { return Data() }
+    /// - Throws: PeripheralManagerError
+    func readData(sequence: UInt8, timeout: TimeInterval) throws -> Data? {
+        guard let characteristic = dataCharacteristic else {
+            throw PeripheralManagerError.notReady
+        }
 
-        return try? readValue(characteristic: characteristic, timeout: timeout)
+        // If data hasn't been received yet, wait for it.
+        if (dataQueue.count == 0) {
+            try runCommand(timeout: timeout) {
+                addCondition(.valueUpdate(characteristic: characteristic, matching: nil))
+            }
+        }
+
+        if (dataQueue.count > 0) {
+            let data = dataQueue.remove(at: 0)
+            if (data[0] != sequence) {
+                throw PeripheralManagerError.incorrectResponse
+            }
+            return data
+        }
+        return nil
     }
     
-    func sendHello(_ controllerId: Data) {
-        perform { [weak self] _ in
-            try? self?.writeCommand(Data([PodCommand.HELLO.rawValue]) + Data([0x01, 0x04]) + controllerId, type: .withResponse, timeout: 2)
-        }
-    }
-
-    func sendCommand(_ command: MessagePacket, _ forEncryption: Bool = false) -> MessageResult {
+    func sendMessage(_ message: MessagePacket, _ forEncryption: Bool = false) -> MessageResult {
         let group = DispatchGroup()
-        let result: MessageResult = MessageSendSuccess()
+        var result: MessageResult = MessageSendSuccess()
         
         group.enter()
+        reset()
         perform { [weak self] _ in
-            self?.sendCommandType(PodCommand.RTS)
-            self?.expectCommandType(PodCommand.CTS)
-            
-            let splitter = PayloadSplitter(payload: command.asData(forEncryption: forEncryption))
-            let packets = splitter.splitInPackets()
+            do {
+                guard let self = self else {
+                    result = MessageSendFailure(error: PeripheralManagerError.notReady)
+                    return
+                }
+                try self.sendCommandType(PodCommand.RTS, timeout: 5)
+                try self.readCommandType(PodCommand.CTS, timeout: 5)
 
-            for packet in packets {
-                self?.sendData(packet.toData(), timeout: 2)
+                let splitter = PayloadSplitter(payload: message.asData(forEncryption: forEncryption))
+                let packets = splitter.splitInPackets()
+
+                for packet in packets {
+                    try self.sendData(packet.toData(), timeout: 5)
+                    try self.peekForNack()
+                }
+
+                try self.readCommandType(PodCommand.SUCCESS, timeout: 5)
+                group.leave()
             }
-            
-            self?.expectCommandType(PodCommand.SUCCESS)
-            group.leave()
-            // TODO:
-//            self?.expectCommandType(PodCommand.NACK) {
-//                result = MessageSendFailure()
-//                self?.flushConditions()
-//                group.leave()
-//            }
+            catch {
+                result = MessageSendFailure(error: error)
+                group.leave()
+            }
         }
         group.wait()
+        reset()
         return result
     }
     
-    func receiveCommand(_ readRTS: Bool = true) throws -> MessagePacket? {
+    func readMessage(_ readRTS: Bool = true) throws -> MessagePacket? {
+        let group = DispatchGroup()
         var packet: MessagePacket?
-        perform { [weak self] _ in
-            if (readRTS) {
-                self?.expectCommandType(PodCommand.RTS)
-            }
-            self?.sendCommandType(PodCommand.CTS)
 
-    //          readReset()
-            var expected: UInt8 = 0
-    //          try {
-            let firstPacket = self?.readData(timeout: 2)
-            print("Reading First Packet")
-            print(firstPacket)
-//            packet = try? MessagePacket.parse(payload: dataCharacteristic.value)
-    //              let firstPacket = expectBlePacket(0)
-    //              if (firstPacket !is PacketReceiveSuccess) {
-    //                  aapsLogger.warn(LTag.PUMPBTCOMM, "Error reading first packet:$firstPacket")
-    //                  return null
-    //              }
-    //              let joiner = PayloadJoiner(firstPacket.payload)
-    //              maxMessageReadTries = joiner.fullFragments * 2 + 2
-    //              for (i in 1 until joiner.fullFragments + 1) {
-    //                  expected++
-    //                  let nackOnTimeout = !joiner.oneExtraPacket && i == joiner.fullFragments // last packet
-    //                  let packet = expectBlePacket(expected, nackOnTimeout)
-    //                  if (packet !is PacketReceiveSuccess) {
-    //                      aapsLogger.warn(LTag.PUMPBTCOMM, "Error reading packet:$packet")
-    //                      return null
-    //                  }
-    //                  joiner.accumulate(packet.payload)
-    //              }
-    //              if (joiner.oneExtraPacket) {
-    //                  expected++
-    //                  let packet = expectBlePacket(expected, true)
-    //                  if (packet !is PacketReceiveSuccess) {
-    //                      aapsLogger.warn(LTag.PUMPBTCOMM, "Error reading packet:$packet")
-    //                      return null
-    //                  }
-    //                  joiner.accumulate(packet.payload)
-    //              }
-    //              let fullPayload = joiner.finalize()
-    //              cmdBleIO.sendAndConfirmPacket(BleCommandSuccess.data)
-    //              return MessagePacket.parse(fullPayload)
-    //          } catch (e: IncorrectPacketException) {
-    //              aapsLogger.warn(LTag.PUMPBTCOMM, "Received incorrect packet: $e")
-    //              cmdBleIO.sendAndConfirmPacket(BleCommandAbort.data)
-    //              return null
-    //          } catch (e: CrcMismatchException) {
-    //              aapsLogger.warn(LTag.PUMPBTCOMM, "CRC mismatch: $e")
-    //              cmdBleIO.sendAndConfirmPacket(BleCommandFail.data)
-    //              return null
-    //          } finally {
-    //              readReset()
-    //          }
-    //          }
-            self?.sendCommandType(PodCommand.SUCCESS)
-            try? MessagePacket.parse(payload: Data())
+        group.enter()
+        reset()
+        perform { [weak self] _ in
+            do {
+                guard let self = self else {
+                    throw PeripheralManagerError.notReady
+                }
+                
+                if (readRTS) {
+                    try self.readCommandType(PodCommand.RTS)
+                }
+                
+                try self.sendCommandType(PodCommand.CTS)
+
+                var expected: UInt8 = 0
+                let firstPacket = try self.readData(sequence: expected, timeout: 5)
+
+                guard let firstPacket = firstPacket else {
+                    return
+                }
+
+                let joiner = try PayloadJoiner(firstPacket: firstPacket)
+
+                for i in 1...joiner.fullFragments {
+                    expected += 1
+                    guard let packet = try self.readData(sequence: expected, timeout: 5) else { return }
+                    try joiner.accumulate(packet: packet)
+                }
+                if (joiner.oneExtraPacket) {
+                    expected += 1
+                    guard let packet = try self.readData(sequence: expected, timeout: 5) else { return }
+                    try joiner.accumulate(packet: packet)
+                }
+                let fullPayload = try joiner.finalize()
+                try  self.sendCommandType(PodCommand.SUCCESS)
+                packet = try MessagePacket.parse(payload: fullPayload)
+                group.leave()
+            }
+            catch {
+                print(error)
+                try? self?.sendCommandType(PodCommand.NACK)
+                group.leave()
+            }
         }
+        group.wait()
+        reset()
         return packet
     }
-    //
-//    private func peekForNack(index: Int, packets: List<BlePacket>): MessageSendResult {
-//        val peekCmd = cmdBleIO.peekCommand()
-//            ?: return MessageSendSuccess
-//
-//        return when (val receivedCmd = BleCommand.parse(peekCmd)) {
-//            is BleCommandNack -> {
-//                // // Consume NACK
-//                val received = cmdBleIO.receivePacket()
-//                if (received == null) {
-//                    MessageSendErrorSending(received.toString())
-//                } else {
-//                    val sendResult = dataBleIO.sendAndConfirmPacket(packets[receivedCmd.idx.toInt()].toByteArray())
-//                    handleSendResult(sendResult, index, packets)
-//                }
-//            }
-//
-//            BleCommandSuccess -> {
-//                if (index != packets.size)
-//                    MessageSendErrorSending("Received SUCCESS before sending all the data. $index")
-//                else
-//                    MessageSendSuccess
-//            }
-//
-//            else ->
-//                MessageSendErrorSending("Received unexpected command: ${peekCmd.toHex()}")
-//        }
-//    }
 
+    func peekForNack() throws -> Void {
+        if cmdQueue.contains(where: { cmd in
+            return cmd[0] == PodCommand.NACK.rawValue
+        }) {
+            throw PeripheralManagerError.nack
+        }
+    }
 }
 
 extension PeripheralManager {
@@ -496,8 +449,10 @@ extension PeripheralManager {
         commandConditions.append(condition)
     }
     
-    func flushConditions() {
+    func reset() {
         commandConditions.removeAll()
+        dataQueue.removeAll()
+        cmdQueue.removeAll()
     }
 
     func discoverServices(_ serviceUUIDs: [CBUUID], timeout: TimeInterval) throws {
@@ -542,7 +497,7 @@ extension PeripheralManager {
         try runCommand(timeout: timeout) {
             addCondition(.valueUpdate(characteristic: characteristic, matching: nil))
 
-            peripheral.readValue(for: characteristic)
+//            peripheral.readValue(for: characteristic)
         }
 
         return characteristic.value
@@ -669,6 +624,16 @@ extension PeripheralManager: CBPeripheralDelegate {
         } else {
             notifyDelegate = true // execute after the unlock
         }
+        
+        if (characteristic == dataCharacteristic && characteristic.value != nil) {
+            // Adding to data queue
+            dataQueue.append(characteristic.value!)
+        }
+
+        if (characteristic == cmdCharacteristic && characteristic.value != nil) {
+            // Adding to cmd queue
+            cmdQueue.append(characteristic.value!)
+        }
 
         commandLock.unlock()
 
@@ -752,5 +717,11 @@ extension Collection where Element: CBAttribute {
         }
 
         return nil
+    }
+}
+
+extension Data {
+    func hexEncodedString() -> String {
+        return map { String(format: "%02hhx", $0) }.joined()
     }
 }

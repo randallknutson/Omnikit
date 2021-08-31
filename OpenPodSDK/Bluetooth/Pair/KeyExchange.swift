@@ -7,6 +7,7 @@
 
 import Foundation
 import CryptoKit
+import CryptoSwift
 
 class KeyExchange {
     static let CMAC_SIZE = 16
@@ -23,8 +24,8 @@ class KeyExchange {
     let pdmPublic: Data
     var podPublic: Data
     var podNonce: Data
-    let podConf: Data
-    let pdmConf: Data
+    var podConf: Data
+    var pdmConf: Data
     var ltk: Data
     
     private let x25519: X25519KeyGenerator
@@ -58,10 +59,6 @@ class KeyExchange {
 
     func validatePodConf(_ payload: Data) throws {
         if (podConf != payload) {
-//            aapsLogger.warn(
-//                LTag.PUMPBTCOMM,
-//                "Received invalid podConf. Expected: ${podConf.toHex()}. Got: ${payload.toHex()}"
-//            )
             throw BLEErrors.MessageIOException("Invalid podConf value received")
         }
     }
@@ -73,18 +70,16 @@ class KeyExchange {
             pdmPublic.subdata(in: pdmPublic.count - 4..<pdmPublic.count) +
             podNonce.subdata(in: podNonce.count - 4..<podNonce.count) +
             pdmNonce.subdata(in: pdmNonce.count - 4..<pdmNonce.count)
-//        aapsLogger.debug(LTag.PUMPBTCOMM, "First key for LTK: ${firstKey.toHex()}")
 
         let intermediateKey = Data(count: KeyExchange.CMAC_SIZE)
-        // TODO: 
-//        aesCmac(firstKey, curveLTK, intermediateKey)
-        aesCmac(firstKey, Data(), intermediateKey)
+        aesCmac(firstKey, curveLTK, intermediateKey)
 
         let ltkData = Data([0x02]) +
             INTERMEDIARY_KEY_MAGIC_STRING! +
             podNonce +
             pdmNonce +
             Data([0x00, 0x01])
+        
         aesCmac(intermediateKey, ltkData, ltk)
 
         let confData = Data([0x01]) +
@@ -92,20 +87,18 @@ class KeyExchange {
             podNonce +
             pdmNonce +
             Data([0x00, 0x01])
-        let confKey = Data(count: KeyExchange.CMAC_SIZE)
+        var confKey = Data(count: KeyExchange.CMAC_SIZE)
         aesCmac(intermediateKey, confData, confKey)
 
-        let pdmConfData = PDM_CONF_MAGIC_PREFIX! +
+        var pdmConfData = PDM_CONF_MAGIC_PREFIX! +
             pdmNonce +
             podNonce
         aesCmac(confKey, pdmConfData, pdmConf)
-//        aapsLogger.debug(LTag.PUMPBTCOMM, "pdmConf: ${pdmConf.toHex()}")
 
-        let podConfData = POD_CONF_MAGIC_PREFIX! +
+        var podConfData = POD_CONF_MAGIC_PREFIX! +
             podNonce +
             pdmNonce
         aesCmac(confKey, podConfData, podConf)
-//        aapsLogger.debug(LTag.PUMPBTCOMM, "podConf: ${podConf.toHex()}")
 
 //        if (BuildConfig.DEBUG) {
 //            aapsLogger.debug(LTag.PUMPBTCOMM, "pdmPrivate: ${pdmPrivate.toHex()}")

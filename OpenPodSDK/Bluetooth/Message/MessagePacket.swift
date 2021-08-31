@@ -16,10 +16,10 @@ struct MessagePacket {
             throw BLEErrors.CouldNotParseMessageException("Incorrect header size")
         }
 
-        guard (String(data: payload.subdata(in: 0..<2), encoding: .utf8) != MAGIC_PATTERN) else {
+        guard (String(data: payload.subdata(in: 0..<2), encoding: .utf8) == MAGIC_PATTERN) else {
             throw BLEErrors.CouldNotParseMessageException("Magic pattern mismatch")
         }
-        let payloadData = [UInt8](payload)
+        let payloadData = payload
         
         let f1 = Flag(payloadData[2])
         let sas = f1.get(3) != 0
@@ -34,7 +34,7 @@ struct MessagePacket {
         let gateway = f2.get(3) != 0
         let type: MessageType = MessageType(rawValue: UInt8(f1.get(7) | (f1.get(6) << 1) | (f1.get(5) << 2) | (f1.get(4) << 3))) ?? .CLEAR
         if (version != 0) {
-            throw BLEErrors.CouldNotParseMessageException("Version was zero")
+            throw BLEErrors.CouldNotParseMessageException("Wrong version")
         }
         let sequenceNumber = payloadData[4]
         let ackNumber = payloadData[5]
@@ -125,7 +125,6 @@ struct MessagePacket {
         let size = payload.count - ((type == MessageType.ENCRYPTED && !forEncryption) ? 8 : 0)
         bb.append(UInt8(size >> 3))
         bb.append(UInt8((size << 5) & 0xff))
-
         bb.append(self.source.address)
         bb.append(self.destination.address)
 

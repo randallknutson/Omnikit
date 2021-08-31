@@ -53,7 +53,7 @@ class LTKExchanger {
         try throwOnSendError(sps1.messagePacket, LTKExchanger.SPS1)
 
         print("Reading sps1")
-        let podSps1 = try device.manager.receiveCommand()
+        let podSps1 = try device.manager.readMessage(false)
         guard let podSps1 = podSps1 else {
             throw BLEErrors.PairingException("Could not read SPS1")
         }
@@ -71,7 +71,7 @@ class LTKExchanger {
         )
         try throwOnSendError(sps2.messagePacket, LTKExchanger.SPS2)
 
-        let podSps2 = try device.manager.receiveCommand()
+        let podSps2 = try device.manager.readMessage()
         guard let podSps2 = podSps2 else {
             throw BLEErrors.PairingException("Could not read SPS2")
         }
@@ -87,16 +87,20 @@ class LTKExchanger {
             keys: [LTKExchanger.SP0GP0],
             payloads: []
         )
-        let result = device.manager.sendCommand(sp0gp0.messagePacket)
+        let result = device.manager.sendMessage(sp0gp0.messagePacket)
         guard ((result as? MessageSendSuccess) != nil) else {
             throw BLEErrors.PairingException("Error sending SP0GP0: \(result)")
         }
 
-        let p0 = try device.manager.receiveCommand()
+        let p0 = try device.manager.readMessage()
         guard let p0 = p0 else {
             throw BLEErrors.PairingException("Could not read P0")
         }
         try validateP0(p0)
+        
+        guard keyExchange.ltk.count == 16 else {
+            throw BLEErrors.InvalidLTKKey("Invalid Key, got \(String(data: keyExchange.ltk, encoding: .utf8) ?? "")")
+        }
 
         return PairResult(
             ltk: keyExchange.ltk,
@@ -105,8 +109,9 @@ class LTKExchanger {
     }
 
     private func throwOnSendError(_ msg: MessagePacket, _ msgType: String) throws {
-        let result = device.manager.sendCommand(msg)
+        let result = device.manager.sendMessage(msg)
         guard ((result as? MessageSendSuccess) != nil) else {
+            print(result)
             throw BLEErrors.PairingException("Could not send or confirm $msgType: \(result)")
         }
     }

@@ -30,6 +30,9 @@ final class StringLengthPrefixEncoding {
             }
             remaining = remaining.subdata(in: key.count..<remaining.count)
 
+            //        let value = data.withUnsafeBytes {
+            //            $0.load(as: Int16.self).bigEndian
+            //        }
             let ulength = UInt16(remaining[0] << 8) | UInt16(remaining[1])
             let length = (ulength <= UInt(Int.max)) ? Int(ulength) : Int(ulength - UInt16(Int.max) - 1) + Int.min
             guard remaining.count >= length else {

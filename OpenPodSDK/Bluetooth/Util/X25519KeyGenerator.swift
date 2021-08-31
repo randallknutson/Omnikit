@@ -16,10 +16,10 @@ struct X25519KeyGenerator {
         let key = try Curve25519.KeyAgreement.PrivateKey(rawRepresentation: privateKey)
         return key.publicKey.rawRepresentation
     }
-    func computeSharedSecret(_ privateKey: Data, _ publicKey: Data) throws -> SharedSecret {
+    func computeSharedSecret(_ privateKey: Data, _ publicKey: Data) throws -> Data {
         let priv = try Curve25519.KeyAgreement.PrivateKey(rawRepresentation: privateKey)
         let pub = try Curve25519.KeyAgreement.PublicKey(rawRepresentation: publicKey)
         let secret = try priv.sharedSecretFromKeyAgreement(with: pub)
-        return secret
+        return secret.withUnsafeBytes({ return Data($0)})
     }
 }

@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		103899E526D405B9002115E9 /* CryptoSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 103899E426D405B9002115E9 /* CryptoSwift */; };
+		103899E726D98B46002115E9 /* PMTemp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 103899E626D98B46002115E9 /* PMTemp.swift */; };
 		10C2CA8826B57E5600B89123 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10C2CA8726B57E5600B89123 /* AppDelegate.swift */; };
 		10C2CA8A26B57E5600B89123 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10C2CA8926B57E5600B89123 /* SceneDelegate.swift */; };
 		10C2CA8C26B57E5600B89123 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10C2CA8B26B57E5600B89123 /* ViewController.swift */; };
@@ -60,6 +61,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		103899E626D98B46002115E9 /* PMTemp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PMTemp.swift; sourceTree = "<group>"; };
 		10C2CA8426B57E5600B89123 /* OpenPodSDK.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OpenPodSDK.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		10C2CA8726B57E5600B89123 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		10C2CA8926B57E5600B89123 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -184,6 +186,7 @@
 				10C2CAE226BCE1BD00B89123 /* Ids.swift */,
 				10C2CAE426BCE36F00B89123 /* Id.swift */,
 				10C2CB0A26CDF76C00B89123 /* CBCentralManager.swift */,
+				103899E626D98B46002115E9 /* PMTemp.swift */,
 			);
 			path = Bluetooth;
 			sourceTree = "<group>";
@@ -390,6 +393,7 @@
 				10C2CAE726BCF09A00B89123 /* StringLengthPrefixEncoding.swift in Sources */,
 				10C2CAF826CC255200B89123 /* PeripheralManager.swift in Sources */,
 				10C2CAD426BA3FDB00B89123 /* BLEErrors.swift in Sources */,
+				103899E726D98B46002115E9 /* PMTemp.swift in Sources */,
 				10C2CAF026C4C3F600B89123 /* PayloadJoiner.swift in Sources */,
 				10C2CAFA26CC5BAA00B89123 /* OSLog.swift in Sources */,
 				10C2CAEE26C4C3CD00B89123 /* BLEPacket.swift in Sources */,

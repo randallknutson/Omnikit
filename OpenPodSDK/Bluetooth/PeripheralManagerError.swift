@@ -15,5 +15,6 @@ enum PeripheralManagerError: Error {
     case emptyValue
     case unknownCharacteristic
     case serviceNotFound
+    case nack
 }
 
