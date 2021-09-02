@@ -5,8 +5,8 @@
 //  Created by Randall Knutson on 8/8/21.
 //
 import CryptoKit
-
 import Foundation
+
 struct X25519KeyGenerator {
     func generatePrivateKey() -> Data {
         let key = Curve25519.KeyAgreement.PrivateKey()

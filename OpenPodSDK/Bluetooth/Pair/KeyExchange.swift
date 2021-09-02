@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import CryptoKit
 import CryptoSwift
 
 class KeyExchange {
@@ -71,8 +70,7 @@ class KeyExchange {
             podNonce.subdata(in: podNonce.count - 4..<podNonce.count) +
             pdmNonce.subdata(in: pdmNonce.count - 4..<pdmNonce.count)
 
-        let intermediateKey = Data(count: KeyExchange.CMAC_SIZE)
-        aesCmac(firstKey, curveLTK, intermediateKey)
+        let intermediateKey = try aesCmac(firstKey, curveLTK)
 
         let ltkData = Data([0x02]) +
             INTERMEDIARY_KEY_MAGIC_STRING! +
@@ -80,49 +78,28 @@ class KeyExchange {
             pdmNonce +
             Data([0x00, 0x01])
         
-        aesCmac(intermediateKey, ltkData, ltk)
+        ltk = try aesCmac(intermediateKey, ltkData)
 
         let confData = Data([0x01]) +
             INTERMEDIARY_KEY_MAGIC_STRING! +
             podNonce +
             pdmNonce +
             Data([0x00, 0x01])
-        var confKey = Data(count: KeyExchange.CMAC_SIZE)
-        aesCmac(intermediateKey, confData, confKey)
+        let confKey = try aesCmac(intermediateKey, confData)
 
-        var pdmConfData = PDM_CONF_MAGIC_PREFIX! +
+        let pdmConfData = PDM_CONF_MAGIC_PREFIX! +
             pdmNonce +
             podNonce
-        aesCmac(confKey, pdmConfData, pdmConf)
+        pdmConf = try aesCmac(confKey, pdmConfData)
 
-        var podConfData = POD_CONF_MAGIC_PREFIX! +
+        let podConfData = POD_CONF_MAGIC_PREFIX! +
             podNonce +
             pdmNonce
-        aesCmac(confKey, podConfData, podConf)
-
-//        if (BuildConfig.DEBUG) {
-//            aapsLogger.debug(LTag.PUMPBTCOMM, "pdmPrivate: ${pdmPrivate.toHex()}")
-//            aapsLogger.debug(LTag.PUMPBTCOMM, "pdmPublic: ${pdmPublic.toHex()}")
-//            aapsLogger.debug(LTag.PUMPBTCOMM, "podPublic: ${podPublic.toHex()}")
-//            aapsLogger.debug(LTag.PUMPBTCOMM, "pdmNonce: ${pdmNonce.toHex()}")
-//            aapsLogger.debug(LTag.PUMPBTCOMM, "podNonce: ${podNonce.toHex()}")
-//
-//            aapsLogger.debug(LTag.PUMPBTCOMM, "LTK, donna key: ${curveLTK.toHex()}")
-//            aapsLogger.debug(LTag.PUMPBTCOMM, "Intermediate key: ${intermediateKey.toHex()}")
-//            aapsLogger.debug(LTag.PUMPBTCOMM, "LTK: ${ltk.toHex()}")
-//            aapsLogger.debug(LTag.PUMPBTCOMM, "Conf KEY: ${confKey.toHex()}")
-//        }
+        podConf = try aesCmac(confKey, podConfData)
     }
-}
-//
-
-//
-private func aesCmac(_ key: Data, _ data: Data, _ result: Data) {
-    // TODO:
-//    AES()
-//    let aesEngine = AESEngine()
-//    let mac = CMac(aesEngine)
-//    mac.init(KeyParameter(key))
-//    mac.update(data, 0, data.count)
-//    mac.doFinal(result, 0)
+    
+    private func aesCmac(_ key: Data, _ data: Data) throws -> Data {
+        let mac = try CMAC(key: key.bytes)
+        return try Data(mac.authenticate(data.bytes))
+    }
 }
